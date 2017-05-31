@@ -1,4 +1,6 @@
-require "pry"
+require 'pry'
+require 'json'
+require 'rest-client'
 
 
 class Trip < ActiveRecord::Base
@@ -8,15 +10,8 @@ class Trip < ActiveRecord::Base
 
 
 
-  def fair_estimate_calculator(distance)
-    all_fares_2015 = RestClient.get('https://data.cityofnewyork.us/resource/2yzn-sicd.json')
-    trips_distance_match = all_fares_2015.collect do |trip_hash|
-      trip_hash[trip_distance:].round == distance
-    end
-    fares_for_average = []
-    trips_distance_match.each do |trip_hash|
-      
+  
 
-  end
+
 
 end
