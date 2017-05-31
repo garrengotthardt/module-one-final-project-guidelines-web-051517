@@ -1,7 +1,7 @@
 require 'geokit'
+require 'pry'
 
 class CLI
-
 
   def welcome
     "Welcome to NYC Yellow Cab booking!"
@@ -17,6 +17,7 @@ class CLI
 
   def collect_name_and_create_user
     "First off, please enter your first name:"
+    # binding.pry
     first_name = get_user_input
     "Thanks! Now, please enter your last name:"
     last_name = get_user_input
@@ -43,18 +44,18 @@ class CLI
   def book_trip?(current_trip)
     "Do you want to book this trip? (Y/N)"
     answer = get_user_input
-    if answer == "Y" || "y"
-      current_trip.trip_taken? = true
+    if answer == "Y"
+      # current_trip.trip_taken? = true
       "Great, your car will be arrivng shortly!"
-    elsif answer == "N" || "n"
+    elsif answer == "N"
       "Ok, look forward to seeing you next time"
     else
-      book_trip?
+      book_trip?(current_trip)
     end
   end
 
 
-  def get_or_create_location_object
+  def get_or_create_location_object(destination)
     address = get_user_input
     address_ll_array = get_address_latitude_longitude_array(address)
     location = Location.find_or_create_by(address: address, latitude: address_ll_array[0], longitude: address_ll_array[1])
@@ -68,12 +69,12 @@ class CLI
 
   def get_address_latitude_longitude_array(address)
     geokit_object = get_geokit_object(address)
-    lat_long_array = geo_kit_object.ll.split(",")
+    lat_long_array = geokit_object.ll.split(",")
   end
 
 
   def get_distance_between_start_and_end(origin_address, destination_address)
-    get_geokit_object(origin_address).distance_to(get_geokit_object(destination_address)
+    get_geokit_object(origin_address).distance_to(get_geokit_object(destination_address))
   end
 
   def get_all_fares_that_match_distance(distance)
@@ -94,7 +95,6 @@ class CLI
     average = matched_trips_fares.inject{ |sum, el| sum + el }.to_f / matched_trips_fares.size
     average
   end
-
 
 
 

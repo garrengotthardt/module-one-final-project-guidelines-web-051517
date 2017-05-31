@@ -6,3 +6,5 @@ gem "sqlite3"
 gem "pry"
 gem "require_all"
 gem "geokit"
+require 'json'
+require 'rest-client'

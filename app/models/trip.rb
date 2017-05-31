@@ -1,6 +1,5 @@
 require 'pry'
-require 'json'
-require 'rest-client'
+
 
 
 class Trip < ActiveRecord::Base
@@ -10,7 +9,7 @@ class Trip < ActiveRecord::Base
 
 
 
-  
+
 
 
 
