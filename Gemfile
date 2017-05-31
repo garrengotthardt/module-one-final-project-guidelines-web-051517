@@ -5,5 +5,5 @@ gem "sinatra-activerecord"
 gem "sqlite3"
 gem "pry"
 gem "require_all"
-gem "soda-ruby", :require => 'soda'
+# gem "soda-ruby", :require => 'soda'
 gem "geokit"
