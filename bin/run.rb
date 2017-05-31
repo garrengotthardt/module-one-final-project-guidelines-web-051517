@@ -18,8 +18,8 @@ distance = cli_instance.get_distance_between_start_and_end(origin.address, desti
 
 estimate = cli_instance.average_fare_cost_for_distance(distance.round)
 
-tell_user_trip_distance_and_estimate(distance, estimate)
+cli_instance.tell_user_trip_distance_and_estimate(distance, estimate)
 
 current_trip = Trip.create(user_id: user.id, origin_id: origin.id, destination_id: destination.id, distance: distance, estimated_cost: estimate, trip_taken?: false)
-
+# binding.pry
 cli_instance.book_trip?(current_trip)

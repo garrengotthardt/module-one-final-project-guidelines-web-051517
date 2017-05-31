@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170530214100) do
+ActiveRecord::Schema.define(version: 20170531201703) do
 
   create_table "locations", force: :cascade do |t|
-    t.string  "address"
-    t.integer "latitude"
-    t.integer "longitude"
+    t.string "address"
+    t.       "latitude"
+    t.       "longitude"
   end
 
   create_table "trips", force: :cascade do |t|

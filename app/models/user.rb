@@ -4,10 +4,10 @@ class User < ActiveRecord::Base
   has_many :trips
   has_many :destinations, through: :trips
 
-  def initialize(first_name, last_name)
-    @first_name = first_name
-    @last_name = last_name
-  end
+  # def initialize(first_name, last_name)
+  #   @first_name = first_name
+  #   @last_name = last_name
+  # end
 
 
 

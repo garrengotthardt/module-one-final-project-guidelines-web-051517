@@ -6,5 +6,6 @@ gem "sqlite3"
 gem "pry"
 gem "require_all"
 gem "geokit"
-require 'json'
-require 'rest-client'
+gem 'soda-ruby', :require => 'soda'
+gem 'json'
+gem 'rest-client'

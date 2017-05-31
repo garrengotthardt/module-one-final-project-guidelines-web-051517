@@ -1,61 +1,66 @@
 require 'geokit'
 require 'pry'
+require 'soda'
+require 'json'
+require 'rest-client'
 
 class CLI
 
   def welcome
-    "Welcome to NYC Yellow Cab booking!"
+    puts "Welcome to NYC Yellow Cab booking!"
   end
 
   def app_description
-    "By providing us your desired pickup and dropoff locaitons, we'll provide you with a fare estimate based on historic fare averages for the distance you're traveling. Given this estimate, if you'd like to book a ride, you'll be able to do so directly in the app."
+    puts "By providing us your desired pickup and dropoff locaitons, we'll provide you with a fare estimate based on historic fare averages for the distance you're traveling. Given this estimate, if you'd like to book a ride, you'll be able to do so directly in the app."
   end
 
   def get_user_input
-    gets.chomp
+    input = gets.chomp
+    input
   end
 
   def collect_name_and_create_user
-    "First off, please enter your first name:"
+    puts "First off, please enter your first name:"
     # binding.pry
     first_name = get_user_input
-    "Thanks! Now, please enter your last name:"
+    puts "Thanks! Now, please enter your last name:"
     last_name = get_user_input
-    new_user = User.new(first_name, last_name)
+    new_user = User.find_or_create_by(first_name: first_name, last_name: last_name)
+    # new_user.first_name = first_name
+    # new_user.last_name = last_name
+    # new_user.save
     new_user
   end
 
   def get_origin_location
-    "Please enter the address you're leaving from:"
-    origin = get_user_input
-    get_or_create_location_object(origin)
+    puts "Please enter the address you're leaving from:"
+    get_or_create_location_object
   end
 
   def get_destination_location
-    "Please enter your desired destination:"
-    destination = get_user_input
-    get_or_create_location_object(destination)
+    puts "Please enter your desired destination:"
+    get_or_create_location_object
   end
 
   def tell_user_trip_distance_and_estimate(distance, estimate)
-    "Your trip will be a total distance of #{distance} miles and has an estimated cost of $#{estimate}."
+    puts "Your trip will be a total distance of #{distance} miles and has an estimated cost of $#{estimate}."
   end
 
   def book_trip?(current_trip)
-    "Do you want to book this trip? (Y/N)"
+    puts "Do you want to book this trip? (Y/N)"
     answer = get_user_input
     if answer == "Y"
-      # current_trip.trip_taken? = true
-      "Great, your car will be arrivng shortly!"
+      current_trip.update(trip_taken?: true)
+      puts "Great, your car will be arrivng shortly!"
     elsif answer == "N"
-      "Ok, look forward to seeing you next time"
+      puts "Ok, look forward to seeing you next time"
     else
       book_trip?(current_trip)
     end
   end
 
 
-  def get_or_create_location_object(destination)
+  def get_or_create_location_object
     address = get_user_input
     address_ll_array = get_address_latitude_longitude_array(address)
     location = Location.find_or_create_by(address: address, latitude: address_ll_array[0], longitude: address_ll_array[1])
