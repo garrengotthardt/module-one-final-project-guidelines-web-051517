@@ -14,12 +14,14 @@ origin = cli_instance.get_origin_location
 
 destination = cli_instance.get_destination_location
 
-distance = cli_instance.get_distance_between_start_and_end(origin.address, destination.address)
+distance = cli_instance.get_distance_between_start_and_end(origin.latitude, origin.longitude, destination.latitude, destination.longitude)
 
-estimate = cli_instance.average_fare_cost_for_distance(distance.round)
+time_estimate = cli_instance.get_time_estimate_between_start_and_end(origin.latitude, origin.longitude, destination.latitude, destination.longitude)
 
-cli_instance.tell_user_trip_distance_and_estimate(distance, estimate)
+fare_estimate = cli_instance.average_fare_cost_for_distance(distance.round)
 
-current_trip = Trip.create(user_id: user.id, origin_id: origin.id, destination_id: destination.id, distance: distance, estimated_cost: estimate, trip_taken?: false)
+cli_instance.tell_user_trip_distance_and_estimate(distance, fare_estimate, time_estimate)
+
+current_trip = Trip.create(user_id: user.id, origin_id: origin.id, destination_id: destination.id, distance: distance, estimated_cost: fare_estimate, trip_taken?: false, time_estimate: time_estimate)
 
 cli_instance.book_trip?(current_trip)

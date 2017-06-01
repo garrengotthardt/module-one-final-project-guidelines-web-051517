@@ -8,9 +8,9 @@ require 'rest-client'
 class CLI
 
   def welcome
-    puts "----------------------------------".colorize(:color => :white, :background => :black)
-    puts "Welcome to NYC Yellow Cab booking!".colorize(:color => :white, :background => :black)
-    puts "----------------------------------".colorize(:color => :white, :background => :black)
+    puts "--------------------------------------------".colorize(:color => :white, :background => :black)
+    puts "     Welcome to NYC Yellow Cab booking!     ".colorize(:color => :white, :background => :black)
+    puts "--------------------------------------------".colorize(:color => :white, :background => :black)
   end
 
   def app_description
@@ -38,7 +38,6 @@ class CLI
     puts ""
     puts "Please enter the address you're leaving from:"
     address = get_user_input
-    # binding.pry
     if valid_address?(address) == true
       get_or_create_location_object(address)
     else
@@ -61,9 +60,9 @@ class CLI
     end
   end
 
-  def tell_user_trip_distance_and_estimate(distance, estimate)
+  def tell_user_trip_distance_and_estimate(distance, fare_estimate, time_estimate)
     puts ""
-    puts "Your trip will be a total distance of #{distance.round(2)} miles and has an estimated cost of $#{estimate.round(2)}."
+    puts "Your trip will be a total distance of #{distance} miles, will take aproximately #{time_estimate} given current traffic, and has an estimated cost of $#{fare_estimate.round(2)}."
   end
 
   def book_trip?(current_trip)
@@ -120,9 +119,19 @@ end
   end
 
 
-  def get_distance_between_start_and_end(origin_address, destination_address)
-    get_geokit_object(origin_address).distance_to(get_geokit_object(destination_address))
+  def get_distance_between_start_and_end(origin_latitude, origin_longitude, destination_latitude, destination_longitude)
+    url = RestClient.get(    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{origin_latitude},#{origin_longitude}&destinations=#{destination_latitude},#{destination_longitude}&key=AIzaSyDov-Q98MaoRLqOVsifYPX1CjICrdAFlNA")
+    trip_data_parsed = JSON.parse(url)
+    trip_distance = trip_data_parsed["rows"][0]["elements"][0]["distance"]["text"]
+    trip_distance.split(" ")[0].to_f
   end
+
+    def get_time_estimate_between_start_and_end(origin_latitude, origin_longitude, destination_latitude, destination_longitude)
+      url = RestClient.get(    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{origin_latitude},#{origin_longitude}&destinations=#{destination_latitude},#{destination_longitude}&key=AIzaSyDov-Q98MaoRLqOVsifYPX1CjICrdAFlNA")
+      trip_data_parsed = JSON.parse(url)
+      time_estimate = trip_data_parsed["rows"][0]["elements"][0]["duration"]["text"]
+      time_estimate
+    end
 
   def get_all_fares_that_match_distance(distance)
     all_fares_2015 = RestClient.get('https://data.cityofnewyork.us/resource/2yzn-sicd.json')
@@ -142,6 +151,11 @@ end
     average = matched_trips_fares.inject{ |sum, el| sum + el }.to_f / matched_trips_fares.size
     average
   end
+
+  # def url
+  #   https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&oorigins=41.43206,-81.38992|-33.86748,151.20699&key=
+  #
+  # end
 
 
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531201703) do
+ActiveRecord::Schema.define(version: 20170601221214) do
 
   create_table "locations", force: :cascade do |t|
     t.string "address"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20170531201703) do
     t.integer "origin_id"
     t.integer "destination_id"
     t.boolean "trip_taken?"
+    t.string  "time_estimate"
     t.index ["destination_id"], name: "index_trips_on_destination_id"
     t.index ["origin_id"], name: "index_trips_on_origin_id"
     t.index ["user_id"], name: "index_trips_on_user_id"
