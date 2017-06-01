@@ -9,3 +9,4 @@ gem "geokit"
 gem 'soda-ruby', :require => 'soda'
 gem 'json'
 gem 'rest-client'
+gem 'colorize'

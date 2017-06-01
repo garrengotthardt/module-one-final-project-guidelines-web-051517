@@ -8,10 +8,13 @@ require 'rest-client'
 class CLI
 
   def welcome
-    puts "Welcome to NYC Yellow Cab booking!"
+    puts "----------------------------------".colorize(:color => :white, :background => :black)
+    puts "Welcome to NYC Yellow Cab booking!".colorize(:color => :white, :background => :black)
+    puts "----------------------------------".colorize(:color => :white, :background => :black)
   end
 
   def app_description
+    puts ""
     puts "By providing us your desired pickup and dropoff locaitons, we'll provide you with a fare estimate based on historic fare averages for the distance you're traveling. Given this estimate, if you'd like to book a ride, you'll be able to do so directly in the app."
   end
 
@@ -21,8 +24,10 @@ class CLI
   end
 
   def collect_name_and_create_user
+    puts ""
     puts "First off, please enter your first name:"
     first_name = get_user_input.downcase
+    puts ""
     puts "Thanks! Now, please enter your last name:"
     last_name = get_user_input.downcase
     new_user = User.find_or_create_by(first_name: first_name, last_name: last_name)
@@ -30,39 +35,47 @@ class CLI
   end
 
   def get_origin_location
+    puts ""
     puts "Please enter the address you're leaving from:"
     address = get_user_input
     # binding.pry
     if valid_address?(address) == true
       get_or_create_location_object(address)
     else
+      puts ""
       puts "The address you entered is outside of our pick-up zone. We only serve the greater New York area including NY, NJ, & CT"
       get_origin_location
     end
   end
 
   def get_destination_location
+    puts ""
     puts "Please enter your desired destination:"
     address = get_user_input
     if valid_address?(address) == true
       get_or_create_location_object(address)
     else
+      puts ""
       puts "The address you entered is outside of our drop-off zone. We only serve the greater New York area including NY, NJ, & CT"
       get_destination_location
     end
   end
 
   def tell_user_trip_distance_and_estimate(distance, estimate)
+    puts ""
     puts "Your trip will be a total distance of #{distance.round(2)} miles and has an estimated cost of $#{estimate.round(2)}."
   end
 
   def book_trip?(current_trip)
+    puts ""
     puts "Do you want to book this trip? (Y/N)"
     answer = get_user_input
     if answer == "Y" || answer == "y"
       current_trip.update(trip_taken?: true)
+      puts ""
       puts "Great, your car will be arrivng shortly!"
     elsif answer == "N" || answer == "n"
+      puts ""
       puts "Ok, look forward to seeing you next time"
     else
       book_trip?(current_trip)
