@@ -31,12 +31,25 @@ class CLI
 
   def get_origin_location
     puts "Please enter the address you're leaving from:"
-    get_or_create_location_object
+    address = get_user_input
+    # binding.pry
+    if valid_address?(address) == true
+      get_or_create_location_object(address)
+    else
+      puts "The address you entered is outside of our pick-up zone. We only serve the greater New York area including NY, NJ, & CT"
+      get_origin_location
+    end
   end
 
   def get_destination_location
     puts "Please enter your desired destination:"
-    get_or_create_location_object
+    address = get_user_input
+    if valid_address?(address) == true
+      get_or_create_location_object(address)
+    else
+      puts "The address you entered is outside of our drop-off zone. We only serve the greater New York area including NY, NJ, & CT"
+      get_destination_location
+    end
   end
 
   def tell_user_trip_distance_and_estimate(distance, estimate)
@@ -56,12 +69,18 @@ class CLI
     end
   end
 
+def valid_address?(address)
+  state = get_state_from_geokit_object(address)
+  if state == "NY" || state == "CT" || state == "NJ"
+    true
+  else
+    false
+  end
+end
 
-  def get_or_create_location_object
-    address = get_user_input
+  def get_or_create_location_object(address)
     address_ll_array = get_address_latitude_longitude_array(address)
     full_address = get_full_address_from_geokit_object(address)
-    # if get_state_from_geokit_object(address)
     location = Location.find_or_create_by(address: full_address, latitude: address_ll_array[0], longitude: address_ll_array[1])
     location
   end
@@ -82,10 +101,10 @@ class CLI
     geokit_object.full_address
   end
 
-  # def get_state_from_geokit_object(address)
-  #   geokit_object = get_geokit_object(address)
-  #   geokit_object.state_code
-  # end
+  def get_state_from_geokit_object(address)
+    geokit_object = get_geokit_object(address)
+    geokit_object.state_code
+  end
 
 
   def get_distance_between_start_and_end(origin_address, destination_address)
