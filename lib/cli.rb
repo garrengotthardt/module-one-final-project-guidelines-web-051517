@@ -4,6 +4,7 @@ require 'soda'
 require 'json'
 require 'rest-client'
 
+
 class CLI
 
   def welcome
@@ -21,14 +22,10 @@ class CLI
 
   def collect_name_and_create_user
     puts "First off, please enter your first name:"
-    # binding.pry
-    first_name = get_user_input
+    first_name = get_user_input.downcase
     puts "Thanks! Now, please enter your last name:"
-    last_name = get_user_input
+    last_name = get_user_input.downcase
     new_user = User.find_or_create_by(first_name: first_name, last_name: last_name)
-    # new_user.first_name = first_name
-    # new_user.last_name = last_name
-    # new_user.save
     new_user
   end
 
@@ -49,10 +46,10 @@ class CLI
   def book_trip?(current_trip)
     puts "Do you want to book this trip? (Y/N)"
     answer = get_user_input
-    if answer == "Y"
+    if answer == "Y" || answer == "y"
       current_trip.update(trip_taken?: true)
       puts "Great, your car will be arrivng shortly!"
-    elsif answer == "N"
+    elsif answer == "N" || answer == "n"
       puts "Ok, look forward to seeing you next time"
     else
       book_trip?(current_trip)

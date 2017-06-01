@@ -21,5 +21,5 @@ estimate = cli_instance.average_fare_cost_for_distance(distance.round)
 cli_instance.tell_user_trip_distance_and_estimate(distance, estimate)
 
 current_trip = Trip.create(user_id: user.id, origin_id: origin.id, destination_id: destination.id, distance: distance, estimated_cost: estimate, trip_taken?: false)
-# binding.pry
+
 cli_instance.book_trip?(current_trip)
