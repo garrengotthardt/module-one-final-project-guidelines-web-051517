@@ -53,7 +53,7 @@ class CLI
   end
 
   def tell_user_trip_distance_and_estimate(distance, estimate)
-    puts "Your trip will be a total distance of #{distance} miles and has an estimated cost of $#{estimate}."
+    puts "Your trip will be a total distance of #{distance.round(2)} miles and has an estimated cost of $#{estimate.round(2)}."
   end
 
   def book_trip?(current_trip)
