@@ -60,9 +60,12 @@ class CLI
   def get_or_create_location_object
     address = get_user_input
     address_ll_array = get_address_latitude_longitude_array(address)
-    location = Location.find_or_create_by(address: address, latitude: address_ll_array[0], longitude: address_ll_array[1])
+    full_address = get_full_address_from_geokit_object(address)
+    # if get_state_from_geokit_object(address)
+    location = Location.find_or_create_by(address: full_address, latitude: address_ll_array[0], longitude: address_ll_array[1])
     location
   end
+
 
   def get_geokit_object(address)
     geokit_object=Geokit::Geocoders::GoogleGeocoder.geocode address
@@ -73,6 +76,16 @@ class CLI
     geokit_object = get_geokit_object(address)
     lat_long_array = geokit_object.ll.split(",")
   end
+
+  def get_full_address_from_geokit_object(address)
+    geokit_object = get_geokit_object(address)
+    geokit_object.full_address
+  end
+
+  # def get_state_from_geokit_object(address)
+  #   geokit_object = get_geokit_object(address)
+  #   geokit_object.state_code
+  # end
 
 
   def get_distance_between_start_and_end(origin_address, destination_address)
