@@ -19,7 +19,7 @@ distance = cli_instance.get_distance_between_start_and_end(origin.latitude, orig
 time_estimate = cli_instance.get_time_estimate_between_start_and_end(origin.latitude, origin.longitude, destination.latitude, destination.longitude)
 
 
-fare_estimate = cli_instance.average_fare_cost_for_distance(distance)
+fare_estimate = cli_instance.average_fare_cost_for_distance(distance.round)
 
 cli_instance.tell_user_trip_distance_and_estimate(distance, fare_estimate, time_estimate, origin.address, destination.address)
 
