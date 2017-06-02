@@ -87,6 +87,7 @@ class CLI
       current_trip.update(trip_taken?: true)
       puts ""
       puts "Great, your car will be arrivng shortly!".colorize(:blue)
+      ascii_taxi
     elsif answer == "N" || answer == "n"
       puts ""
       puts "Ok, look forward to seeing you next time".colorize(:blue)
@@ -170,6 +171,18 @@ end
     end
     average = matched_trips_fares.inject{ |sum, el| sum + el }.to_f / matched_trips_fares.size
     average
+  end
+
+  def ascii_taxi
+    puts '                   [\                     '.colorize(:yellow)
+    puts '              .----" `-----.              '.colorize(:yellow)
+    puts '             //^^^^;;^^^^^^`\             '.colorize(:yellow)
+    puts '     _______//_____||_____()_\________    '.colorize(:yellow)
+    puts '    /NYC826 :      :                  `\  '.colorize(:yellow)
+    puts '   |>   ____;      ; NYC TAXI  ____   _<) '.colorize(:yellow)
+    puts '  {____/    \_________________/    \____} '.colorize(:yellow)
+    puts '       \ "" /                 \ "" /      '.colorize(:yellow)
+    puts '        "--"                   "--"       '.colorize(:yellow)
   end
 
 
