@@ -69,9 +69,9 @@ class CLI
     d_district = get_district_from_geokit_object(destination_address)
     o_district = get_district_from_geokit_object(origin_address)
     # binding.pry
-      if d_district != "Queens County" && d_district != "Kings County" && d_district != "New York County" && d_district != "Westchester County" && d_district != "Nassau County" || o_district != "Queens County" && o_district != "Kings County" && o_district != "New York County" && o_district != "Westchester County" && o_district != "Nassau County"
+      if d_district != "Queens County" && d_district != "Kings County" && d_district != "New York County" && d_district != "Westchester County" && d_district != "Nassau County" && d_district != "Richmond County" && d_district != "Bronx County"  || o_district != "Queens County" && o_district != "Kings County" && o_district != "New York County" && o_district != "Westchester County" && o_district != "Nassau County" && o_district != "Richmond County" && o_district != "Bronx County"
           puts ""
-          puts "Your trip will be a total distance of #{distance} miles, will take aproximately #{time_estimate} given current traffic. Due to either your origin or destination being outside the New York County area (excluding Westchester and Nassau Counties) your fare will be a flat rate negotiated with the driver upon pick-up.".colorize(:blue)
+          puts "Your trip will be a total distance of #{distance} miles, will take aproximately #{time_estimate} given current traffic. Because either your origin or destination is outside the New York County area, your fare will be a flat rate negotiated with the driver upon pick-up.".colorize(:blue)
       else
         if fare_estimate.nan?
           # binding.pry
