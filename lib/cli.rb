@@ -96,7 +96,7 @@ class CLI
       ascii_taxi
     elsif answer == "N" || answer == "n"
       puts ""
-      puts "Ok, look forward to seeing you next time".colorize(:blue)
+      puts "Ok, look forward to seeing you next time!".colorize(:blue)
     else
       book_trip?(current_trip)
     end
