@@ -35,9 +35,9 @@ class CLI
     puts ""
     puts "Thanks! Now, please enter your last name:".colorize(:blue)
     last_name = get_user_input.downcase
-    new_user = User.find_or_create_by(first_name: first_name, last_name: last_name)
-    new_user
+    User.find_or_create_by(first_name: first_name, last_name: last_name)
   end
+
 
   def get_origin_location
     puts ""
