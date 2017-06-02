@@ -15,12 +15,17 @@ class CLI
 
   def app_description
     puts ""
-    puts "By providing us your desired pickup and dropoff locaitons, we'll provide you with a fare estimate based on historic fare averages for the distance you're traveling. Given this estimate, if you'd like to book a ride, you'll be able to do so directly in the app.".colorize(:blue)
+    puts "By providing us your desired pickup and dropoff locations, we'll provide you with:".colorize(:blue)
+    puts ""
+    puts "— the distance you'll be travelling".colorize(:blue)
+    puts "— the estimated duration of your trip based on current traffic".colorize(:blue)
+    puts "— the estimated cost of your trip based on the average cost recent trips of a similar distance".colorize(:blue)
+    puts ""
+    puts "Given this estimate, if you'd like to book a ride, you'll be able to do so directly in the app.".colorize(:blue)
   end
 
   def get_user_input
-    input = gets.chomp
-    input
+    gets.chomp
   end
 
   def collect_name_and_create_user
@@ -121,7 +126,7 @@ end
 
   def get_address_latitude_longitude_array(address)
     geokit_object = get_geokit_object(address)
-    lat_long_array = geokit_object.ll.split(",")
+    geokit_object.ll.split(",")
   end
 
   def get_full_address_from_geokit_object(address)
