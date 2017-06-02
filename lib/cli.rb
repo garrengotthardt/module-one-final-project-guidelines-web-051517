@@ -112,9 +112,7 @@ end
 
 
   def get_or_create_location_object(address)
-    address_ll_array = get_address_latitude_longitude_array(address)
-    full_address = get_full_address_from_geokit_object(address)
-    Location.find_or_create_by(address: full_address, latitude: address_ll_array[0], longitude: address_ll_array[1])
+    Location.find_or_create_by(address: get_full_address_from_geokit_object(address), latitude: get_address_latitude_longitude_array(address)[0], longitude: get_address_latitude_longitude_array(address)[1])
   end
 
 
@@ -140,36 +138,24 @@ end
 
 
   def get_distance_between_start_and_end(origin_latitude, origin_longitude, destination_latitude, destination_longitude)
-    url = RestClient.get(    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{origin_latitude},#{origin_longitude}&destinations=#{destination_latitude},#{destination_longitude}&key=AIzaSyDov-Q98MaoRLqOVsifYPX1CjICrdAFlNA")
-    trip_data_parsed = JSON.parse(url)
-    trip_distance = trip_data_parsed["rows"][0]["elements"][0]["distance"]["text"]
-    trip_distance.split(" ")[0].to_f
+    JSON.parse(RestClient.get(    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{origin_latitude},#{origin_longitude}&destinations=#{destination_latitude},#{destination_longitude}&key=AIzaSyDov-Q98MaoRLqOVsifYPX1CjICrdAFlNA"))["rows"][0]["elements"][0]["distance"]["text"].split(" ")[0].to_f
   end
 
-    def get_time_estimate_between_start_and_end(origin_latitude, origin_longitude, destination_latitude, destination_longitude)
-      url = RestClient.get(    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{origin_latitude},#{origin_longitude}&destinations=#{destination_latitude},#{destination_longitude}&key=AIzaSyDov-Q98MaoRLqOVsifYPX1CjICrdAFlNA")
-      trip_data_parsed = JSON.parse(url)
-      time_estimate = trip_data_parsed["rows"][0]["elements"][0]["duration"]["text"]
-      time_estimate
-    end
+  def get_time_estimate_between_start_and_end(origin_latitude, origin_longitude, destination_latitude, destination_longitude)
+    JSON.parse(RestClient.get(    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{origin_latitude},#{origin_longitude}&destinations=#{destination_latitude},#{destination_longitude}&key=AIzaSyDov-Q98MaoRLqOVsifYPX1CjICrdAFlNA"))["rows"][0]["elements"][0]["duration"]["text"]
+  end
 
   def get_all_fares_that_match_distance(distance)
-    all_fares_2015 = RestClient.get('https://data.cityofnewyork.us/resource/2yzn-sicd.json')
-    all_fares_2015_parsed = JSON.parse(all_fares_2015)
-    all_fares_2015_parsed.find_all do |trip_hash|
+   JSON.parse(RestClient.get('https://data.cityofnewyork.us/resource/2yzn-sicd.json')).select do |trip_hash|
       trip_hash["trip_distance"].to_f.round == distance
     end
   end
 
   def average_fare_cost_for_distance(distance)
-    matched_trips_fares = []
-    trips_distance_match = get_all_fares_that_match_distance(distance)
-    trips_distance_match.each do |trip_hash|
-      total_trip_cost_less_tip = (trip_hash["fare_amount"].to_f + trip_hash["imp_surcharge"].to_f + trip_hash["mta_tax"].to_f + trip_hash["tolls_amount"].to_f + trip_hash["extra"].to_f)
-      matched_trips_fares << total_trip_cost_less_tip
+    matched_trips_fares = get_all_fares_that_match_distance(distance).map do |trip_hash|
+      (trip_hash["fare_amount"].to_f + trip_hash["imp_surcharge"].to_f + trip_hash["mta_tax"].to_f + trip_hash["tolls_amount"].to_f + trip_hash["extra"].to_f)
     end
-    average = matched_trips_fares.inject{ |sum, el| sum + el }.to_f / matched_trips_fares.size
-    average
+    matched_trips_fares.inject{ |sum, el| sum + el }.to_f / matched_trips_fares.size
   end
 
   def ascii_taxi
