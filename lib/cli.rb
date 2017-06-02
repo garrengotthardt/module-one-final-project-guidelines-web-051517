@@ -15,7 +15,7 @@ class CLI
 
   def app_description
     puts ""
-    puts "By providing us your desired pickup and dropoff locaitons, we'll provide you with a fare estimate based on historic fare averages for the distance you're traveling. Given this estimate, if you'd like to book a ride, you'll be able to do so directly in the app."
+    puts "By providing us your desired pickup and dropoff locaitons, we'll provide you with a fare estimate based on historic fare averages for the distance you're traveling. Given this estimate, if you'd like to book a ride, you'll be able to do so directly in the app.".colorize(:blue)
   end
 
   def get_user_input
@@ -25,10 +25,10 @@ class CLI
 
   def collect_name_and_create_user
     puts ""
-    puts "First off, please enter your first name:"
+    puts "First off, please enter your first name:".colorize(:blue)
     first_name = get_user_input.downcase
     puts ""
-    puts "Thanks! Now, please enter your last name:"
+    puts "Thanks! Now, please enter your last name:".colorize(:blue)
     last_name = get_user_input.downcase
     new_user = User.find_or_create_by(first_name: first_name, last_name: last_name)
     new_user
@@ -36,46 +36,59 @@ class CLI
 
   def get_origin_location
     puts ""
-    puts "Please enter the address you're leaving from:"
+    puts "Please enter the address you're leaving from:".colorize(:blue)
     address = get_user_input
     if valid_address?(address) == true
       get_or_create_location_object(address)
     else
       puts ""
-      puts "The address you entered is outside of our pick-up zone. We only serve the greater New York area including NY, NJ, & CT"
+      puts "The address you entered is outside of our pick-up zone. We only serve the greater New York area including NY, NJ, & CT".colorize(:blue)
       get_origin_location
     end
   end
 
   def get_destination_location
     puts ""
-    puts "Please enter your desired destination:"
+    puts "Please enter your desired destination:".colorize(:blue)
     address = get_user_input
     if valid_address?(address) == true
       get_or_create_location_object(address)
     else
       puts ""
-      puts "The address you entered is outside of our drop-off zone. We only serve the greater New York area including NY, NJ, & CT"
+      puts "The address you entered is outside of our drop-off zone. We only serve the greater New York area including NY, NJ, & CT".colorize(:blue)
       get_destination_location
     end
   end
 
-  def tell_user_trip_distance_and_estimate(distance, fare_estimate, time_estimate)
-    puts ""
-    puts "Your trip will be a total distance of #{distance} miles, will take aproximately #{time_estimate} given current traffic, and has an estimated cost of $#{fare_estimate.round(2)}."
+  def tell_user_trip_distance_and_estimate(distance, fare_estimate, time_estimate, origin_address, destination_address)
+    d_district = get_district_from_geokit_object(destination_address)
+    o_district = get_district_from_geokit_object(origin_address)
+    # binding.pry
+      if d_district != "Queens County" || d_district != "Kings County" || d_district != "New York County" || d_district != "Westchester County" || d_district != "Nassau County" || o_district != "Queens County" || o_district != "Kings County" || o_district != "New York County" || o_district != "Westchester County" || o_district != "Nassau County"
+      puts ""
+      puts "Your trip will be a total distance of #{distance} miles, will take aproximately #{time_estimate} given current traffic. Due to your destination being outside the New York County area (excluding Westchester and Nassau Counties) your fare will be a flat rate negotiated with the driver upon pick-up.".colorize(:blue)
+      else
+        if fare_estimate == NaN
+          puts ""
+          puts "Your trip will be a total distance of #{distance} miles, will take aproximately #{time_estimate} given current traffic.  Unfortunately, there is no historical data to support a fare estimate for a trip of this distance".colorize(:blue)
+        else
+          puts ""
+          puts "Your trip will be a total distance of #{distance} miles, will take aproximately #{time_estimate} given current traffic, and has an estimated cost of $#{fare_estimate.round(2)}.".colorize(:blue)
+        end
+      end
   end
 
   def book_trip?(current_trip)
     puts ""
-    puts "Do you want to book this trip? (Y/N)"
+    puts "Do you want to book this trip? (Y/N)".colorize(:blue)
     answer = get_user_input
     if answer == "Y" || answer == "y"
       current_trip.update(trip_taken?: true)
       puts ""
-      puts "Great, your car will be arrivng shortly!"
+      puts "Great, your car will be arrivng shortly!".colorize(:blue)
     elsif answer == "N" || answer == "n"
       puts ""
-      puts "Ok, look forward to seeing you next time"
+      puts "Ok, look forward to seeing you next time".colorize(:blue)
     else
       book_trip?(current_trip)
     end
@@ -89,6 +102,7 @@ def valid_address?(address)
     false
   end
 end
+
 
   def get_or_create_location_object(address)
     address_ll_array = get_address_latitude_longitude_array(address)
@@ -116,6 +130,11 @@ end
   def get_state_from_geokit_object(address)
     geokit_object = get_geokit_object(address)
     geokit_object.state_code
+  end
+
+  def get_district_from_geokit_object(address)
+      geokit_object = get_geokit_object(address)
+      geokit_object.district
   end
 
 
@@ -151,13 +170,6 @@ end
     average = matched_trips_fares.inject{ |sum, el| sum + el }.to_f / matched_trips_fares.size
     average
   end
-
-  # def url
-  #   https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&oorigins=41.43206,-81.38992|-33.86748,151.20699&key=
-  #
-  # end
-
-
 
 
 end
