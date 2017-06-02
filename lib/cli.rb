@@ -17,7 +17,7 @@ class CLI
     puts ""
     puts "By providing us your desired pickup and dropoff locations, we'll provide you with:".colorize(:blue)
     puts ""
-    puts "— the distance you'll be travelling".colorize(:blue)
+    puts "— the distance you'll be traveling".colorize(:blue)
     puts "— the estimated duration of your trip based on current traffic".colorize(:blue)
     puts "— the estimated cost of your trip based on the average cost recent trips of a similar distance".colorize(:blue)
     puts ""
