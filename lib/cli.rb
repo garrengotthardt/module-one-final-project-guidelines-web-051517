@@ -66,10 +66,11 @@ class CLI
   end
 
   def tell_user_trip_distance_and_estimate(distance, fare_estimate, time_estimate, origin_address, destination_address)
-    d_district = get_district_from_geokit_object(destination_address)
-    o_district = get_district_from_geokit_object(origin_address)
+    # d_district = get_district_from_geokit_object(destination_address)
+    # o_district = get_district_from_geokit_object(origin_address)
     # binding.pry
-      if d_district != "Queens County" && d_district != "Kings County" && d_district != "New York County" && d_district != "Westchester County" && d_district != "Nassau County" && d_district != "Richmond County" && d_district != "Bronx County"  || o_district != "Queens County" && o_district != "Kings County" && o_district != "New York County" && o_district != "Westchester County" && o_district != "Nassau County" && o_district != "Richmond County" && o_district != "Bronx County"
+      if check_if_address_county_is_valid(origin_address) == false || check_if_address_county_is_valid(destination_address) == false
+        binding.pry
           puts ""
           puts "Your trip will be a total distance of #{distance} miles, will take aproximately #{time_estimate} given current traffic. Because either your origin or destination is outside the New York County area, your fare will be a flat rate negotiated with the driver upon pick-up.".colorize(:blue)
       else
@@ -136,6 +137,10 @@ end
     get_geokit_object(address).district
   end
 
+  def check_if_address_county_is_valid(address)
+    district = get_district_from_geokit_object(address)
+    ["Queens County", "Kings County", "New York County", "Richmond County", "Bronx County", "Westchester County", "Nassau County"].include?(district)
+  end
 
   def get_distance_between_start_and_end(origin_latitude, origin_longitude, destination_latitude, destination_longitude)
     JSON.parse(RestClient.get(    "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=#{origin_latitude},#{origin_longitude}&destinations=#{destination_latitude},#{destination_longitude}&key=AIzaSyDov-Q98MaoRLqOVsifYPX1CjICrdAFlNA"))["rows"][0]["elements"][0]["distance"]["text"].split(" ")[0].to_f
@@ -157,6 +162,8 @@ end
     end
     matched_trips_fares.inject{ |sum, el| sum + el }.to_f / matched_trips_fares.size
   end
+
+
 
   def ascii_taxi
     puts '                   [\                     '.colorize(:yellow)
