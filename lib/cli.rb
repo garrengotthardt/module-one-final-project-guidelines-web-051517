@@ -114,34 +114,28 @@ end
   def get_or_create_location_object(address)
     address_ll_array = get_address_latitude_longitude_array(address)
     full_address = get_full_address_from_geokit_object(address)
-    location = Location.find_or_create_by(address: full_address, latitude: address_ll_array[0], longitude: address_ll_array[1])
-    location
+    Location.find_or_create_by(address: full_address, latitude: address_ll_array[0], longitude: address_ll_array[1])
   end
 
 
   def get_geokit_object(address)
-    geokit_object=Geokit::Geocoders::GoogleGeocoder.geocode address
-    geokit_object
+    Geokit::Geocoders::GoogleGeocoder.geocode address
   end
 
   def get_address_latitude_longitude_array(address)
-    geokit_object = get_geokit_object(address)
-    geokit_object.ll.split(",")
+    get_geokit_object(address).ll.split(",")
   end
 
   def get_full_address_from_geokit_object(address)
-    geokit_object = get_geokit_object(address)
-    geokit_object.full_address
+    get_geokit_object(address).full_address
   end
 
   def get_state_from_geokit_object(address)
-    geokit_object = get_geokit_object(address)
-    geokit_object.state_code
+    get_geokit_object(address).state_code
   end
 
   def get_district_from_geokit_object(address)
-      geokit_object = get_geokit_object(address)
-      geokit_object.district
+    get_geokit_object(address).district
   end
 
 
